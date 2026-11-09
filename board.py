@@ -21,10 +21,12 @@ class Board:
             return True
         return False
     def receive_shot(self, x,y):
+        if not self.in_bounds(x,y):
+            return "OUT_OF_BOUNDS"
         target=self.grid[y][x]
         if target=='H':
             for plane in self.airplanes:
-                if plane.coord["head"]==(x,y):
+                if plane.coords["head"]==(x,y):
                     for px,py in plane.coords["body"]:
                         self.grid[py][px]='X'
                     self.grid[y][x]='X'
@@ -36,6 +38,7 @@ class Board:
         elif target == '.':
             self.grid[y][x] = 'O'
             return "MISS"
+        
 
         return "ALREADY_SHOT"
     def all_destroyed(self):

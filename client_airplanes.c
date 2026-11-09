@@ -9,7 +9,8 @@ int main(int argc, char** argv){
   if(argc>1)
     ip=argv[1];
   else ip="127.0.0.1";
-  const char *s="SHOT 3 4\n";
+  const char *s;
+  
   char buf[64];
   struct sockaddr_in sok={0};
   int fd=socket(AF_INET, SOCK_STREAM, 0);
@@ -21,14 +22,32 @@ int main(int argc, char** argv){
     return 1;
   
   }
-  send(fd, s, strlen(s) ,0);
-  ssize_t n=recv(fd, buf, sizeof buf-1,0);
-  if(n<1)
-    {perror("recv");
-    return 1;
+  while(true){
+    int x, y;
+    char msg[64];
+
+    printf("Input x and y: ");
+    if (scanf("%d %d", &x, &y) != 2) {
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF) 
+            if (c == EOF) 
+              break;                            
+        fprintf(stderr, "bad input, try again\n");
+        continue;      
     }
-  buf[n]='\0';
-  printf("%s", buf);
+
+    snprintf(msg, sizeof msg, "SHOT %d %d\n", x, y);
+    send(fd, msg, strlen(msg), 0);
+    ssize_t n=recv(fd, buf, sizeof buf-1,0);
+    if(n<1)
+    { perror("recv");
+      return 1;
+    }
+    buf[n]='\0';
+    printf("%s", buf);
+  
+  }
+  
   close(fd);
   
   return 0;

@@ -7,8 +7,12 @@ class Server:
         cs,addr=s.accept()
         return cs
     def read_from_client(self,cs):
-        b=cs.recv(10)
-        return b
+        b=cs.recv(100)
+        if not b:
+            return None
+        shot= b.decode()
+        parts=shot.split()
+        return parts
     def send_to_client(self,cs, string):
         cs.sendall((string+"\n").encode())
 
