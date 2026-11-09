@@ -4,15 +4,19 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #define TCP 5000
-int main(){
+int main(int argc, char** argv){
+  const char *ip;
+  if(argc>1)
+    ip=argv[1];
+  else ip="127.0.0.1";
   const char *s="SHOT 3 4\n";
   char buf[64];
   struct sockaddr_in sok={0};
   int fd=socket(AF_INET, SOCK_STREAM, 0);
   sok.sin_family=AF_INET;
   sok.sin_port=htons(TCP);
-  inet_pton(AF_INET, "127.0.0.1",&sok.sin_addr);
-  if(connect(fd, (struct sockaddr *)&sok, sizeof sok)<0){
+  inet_pton(AF_INET, ip ,&sok.sin_addr);
+  if(connect(fd, (struct sockaddr *)&sok, sizeof sok)<0){.
     perror("connect");
     return 1;
   
@@ -24,7 +28,7 @@ int main(){
     return 1;
     }
   buf[n]='\0';
-  printf("%s\n", buf);
+  
   close(fd);
   
   return 0;
