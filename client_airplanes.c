@@ -16,7 +16,7 @@ int main(int argc, char** argv){
   sok.sin_family=AF_INET;
   sok.sin_port=htons(TCP);
   inet_pton(AF_INET, ip ,&sok.sin_addr);
-  if(connect(fd, (struct sockaddr *)&sok, sizeof sok)<0){.
+  if(connect(fd, (struct sockaddr *)&sok, sizeof sok)<0){
     perror("connect");
     return 1;
   
@@ -28,7 +28,7 @@ int main(int argc, char** argv){
     return 1;
     }
   buf[n]='\0';
-  
+  printf("%s", buf);
   close(fd);
   
   return 0;
