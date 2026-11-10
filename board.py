@@ -53,6 +53,12 @@ class Board:
                 else:
                     display_row.append(cell)
             print(f"{y} " + " ".join(display_row))
+    def to_string(self, hide_ships=False):
+        out = []
+        for row in self.grid:
+            for c in row:
+                out.append('.' if hide_ships and c in ("H", "B") else c)
+        return "".join(out)
 
 
 

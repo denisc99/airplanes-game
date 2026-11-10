@@ -2,16 +2,28 @@ from board import Board
 from server import Server
 from airplane import Airplane
 from GameLogic import GameLogic
-def main():
-  srv=Server()
-  game=GameLogic(srv)
-  ok1 = game.place_planes(1)
-  print("player 1 placed:", ok1)
-  ok2 = game.place_planes(2)
-  print("player 2 placed:", ok2)
-  game.boards[1].display()
-  game.boards[2].display()
-  
+import threading
 
-if __name__=="__main__":
+def run_match(srv, cs1, cs2):
+    try:
+        GameLogic(srv, cs1, cs2).game_loop()
+    except (ConnectionError, OSError):
+        pass                              
+    finally:
+        for cs in (cs1, cs2):
+            srv.buffers.pop(cs, None)
+            try:
+                cs.close()
+            except OSError:
+                pass
+
+def main():
+    srv = Server()
+    srv.start_server()
+    while True:
+        cs1 = srv.accept_client()         
+        cs2 = srv.accept_client()         
+        threading.Thread(target=run_match, args=(srv, cs1, cs2), daemon=True).start()
+
+if __name__ == "__main__":
     main()
